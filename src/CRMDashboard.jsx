@@ -861,31 +861,60 @@ function PipelineTab({ leads, onSelect }) {
   const confirmed = leads.filter((l) => l.status === 'Confirmed')
   const completed = []
 
-  const PipelineCol = ({ title, items, bg, color }) => (
-    <div className="pipeline-col flex-1 min-w-0 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between mb-2 flex-shrink-0">
-        <p className="text-xs font-bold uppercase tracking-widest" style={{ color }}>{title}</p>
-        <span className="text-xs font-bold rounded-full px-2 py-0.5" style={{ background: bg, color }}>{items.length}</span>
-      </div>
-      <div className="pipeline-col-cards overflow-y-auto flex-1 space-y-2 pr-1">
-        {items.length === 0 && <p className="text-xs text-gray-400 italic text-center py-3">No leads</p>}
-        {items.map((lead) => (
-          <div
-            key={lead.id}
-            className="rounded-xl px-3 py-2 cursor-pointer transition-opacity hover:opacity-75"
-            style={{ background: bg, border: `1px solid ${color}33` }}
-            onClick={() => onSelect(lead)}
-          >
-            <p className="font-medium text-xs text-[#2D2D2D] truncate">{safe(lead.customer_name)}</p>
-            <p className="text-xs text-gray-500 truncate mt-0.5">{safe(lead.event_type)}</p>
-            {!isBad(lead.estimated_quote) && lead.estimated_quote > 0 && (
-              <p className="text-xs font-bold mt-1" style={{ color: '#C1272D' }}>{fmt$(lead.estimated_quote)}</p>
-            )}
+  const [openStages, setOpenStages] = useState({ 'New Inquiry': true, 'Quoted': false, 'Confirmed': false, 'Completed': false })
+  const toggleStage = (title) => setOpenStages((prev) => ({ ...prev, [title]: !prev[title] }))
+
+  const PipelineCol = ({ title, items, bg, color }) => {
+    const isOpen = openStages[title]
+    return (
+      <div className="pipeline-col flex-1 min-w-0 flex flex-col overflow-hidden">
+        {/* Clickable header */}
+        <button
+          onClick={() => toggleStage(title)}
+          className="flex items-center justify-between mb-2 flex-shrink-0 w-full text-left group"
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+        >
+          <div className="flex items-center gap-1.5">
+            <svg
+              className="w-3 h-3 transition-transform duration-200 flex-shrink-0"
+              style={{ color, transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)' }}
+              fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+            <p className="text-xs font-bold uppercase tracking-widest" style={{ color }}>{title}</p>
           </div>
-        ))}
+          <span className="text-xs font-bold rounded-full px-2 py-0.5" style={{ background: bg, color }}>{items.length}</span>
+        </button>
+        {/* Collapsible cards */}
+        <div
+          className="pipeline-col-cards overflow-y-auto space-y-2 pr-1 flex-shrink-0"
+          style={{
+            maxHeight: isOpen ? '200px' : '0px',
+            overflow: isOpen ? 'auto' : 'hidden',
+            transition: 'max-height 0.25s ease',
+            flex: isOpen ? '1' : '0',
+          }}
+        >
+          {items.length === 0 && <p className="text-xs text-gray-400 italic text-center py-3">No leads</p>}
+          {items.map((lead) => (
+            <div
+              key={lead.id}
+              className="rounded-xl px-3 py-2 cursor-pointer transition-opacity hover:opacity-75"
+              style={{ background: bg, border: `1px solid ${color}33` }}
+              onClick={() => onSelect(lead)}
+            >
+              <p className="font-medium text-xs text-[#2D2D2D] truncate">{safe(lead.customer_name)}</p>
+              <p className="text-xs text-gray-500 truncate mt-0.5">{safe(lead.event_type)}</p>
+              {!isBad(lead.estimated_quote) && lead.estimated_quote > 0 && (
+                <p className="text-xs font-bold mt-1" style={{ color: '#C1272D' }}>{fmt$(lead.estimated_quote)}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div className="pipeline-grid flex gap-3 h-full overflow-hidden">
@@ -936,15 +965,22 @@ function InsightsTab({ leads }) {
   return (
     <div className="insights-grid flex gap-3 h-full overflow-hidden">
       <InsightCard title="Top Performing Channels">
-        <div className="space-y-2">
+        <div>
           {channels.map((c, i) => (
-            <div key={c.src} className="flex items-center justify-between gap-2 text-xs">
+            <div
+              key={c.src}
+              className="flex items-center justify-between gap-2 text-xs px-2 py-1.5"
+              style={{
+                background: i % 2 === 1 ? '#F5F2EC' : 'transparent',
+                borderBottom: '1px solid #E8E4DE',
+              }}
+            >
               <span className={`truncate ${i === 0 ? 'font-bold text-[#2D2D2D]' : 'text-gray-600'}`}>
                 {i === 0 ? '🏆 ' : ''}{c.src}
               </span>
               <div className="flex items-center gap-2 shrink-0">
                 <span className="text-gray-400">{c.count} lead{c.count !== 1 ? 's' : ''}</span>
-                <span className="font-bold" style={{ color: '#C1272D' }}>{fmt$(c.total)}</span>
+                <span className="font-extrabold" style={{ color: '#C1272D' }}>{fmt$(c.total)}</span>
               </div>
             </div>
           ))}
@@ -952,36 +988,50 @@ function InsightsTab({ leads }) {
       </InsightCard>
 
       <InsightCard title="Popular Services">
-        <div className="space-y-2">
-          {services.map((s) => (
-            <div key={s.svc} className="flex items-center justify-between gap-2 text-xs">
+        <div>
+          {services.map((s, i) => (
+            <div
+              key={s.svc}
+              className="flex items-center justify-between gap-2 text-xs px-2 py-1.5"
+              style={{
+                background: i % 2 === 1 ? '#F5F2EC' : 'transparent',
+                borderBottom: '1px solid #E8E4DE',
+              }}
+            >
               <span className="truncate text-gray-600">{s.svc}</span>
               <div className="flex items-center gap-2 shrink-0">
                 <span className="text-gray-400">{s.count}×</span>
-                <span className="font-medium text-[#2D2D2D]">avg {fmt$(s.avg)}</span>
+                <span className="font-extrabold text-[#2D2D2D]">avg {fmt$(s.avg)}</span>
               </div>
             </div>
           ))}
         </div>
-        <p className="text-xs text-gray-400 italic mt-3 pt-2" style={{ borderTop: '1px solid #F3F4F6' }}>
+        <p className="text-xs text-gray-400 italic mt-3 pt-2" style={{ borderTop: '1px solid #E8E4DE' }}>
           Crust recommends: Feature <strong>{topService}</strong> prominently on your website and social media.
         </p>
       </InsightCard>
 
       <InsightCard title="Customer Segments">
-        <div className="space-y-2">
+        <div>
           {[
             { label: 'VIP / Repeat', arr: vip,       color: '#1E40AF', bg: '#DBEAFE' },
             { label: 'High Value',   arr: highValue,  color: '#065F46', bg: '#D1FAE5' },
             { label: 'At Risk',      arr: atRisk,     color: '#991B1B', bg: '#FEE2E2' },
-          ].map((seg) => (
-            <div key={seg.label} className="flex items-center justify-between rounded-lg px-3 py-2 text-xs" style={{ background: seg.bg }}>
+          ].map((seg, i, arr) => (
+            <div
+              key={seg.label}
+              className="flex items-center justify-between rounded-lg px-3 py-2 text-xs"
+              style={{
+                background: seg.bg,
+                borderBottom: i < arr.length - 1 ? '1px solid #E8E4DE' : 'none',
+              }}
+            >
               <span className="font-medium" style={{ color: seg.color }}>{seg.label}</span>
-              <span style={{ color: seg.color }}>{seg.arr.length} · {fmt$(sumQ(seg.arr))}</span>
+              <span className="font-extrabold" style={{ color: seg.color }}>{seg.arr.length} · {fmt$(sumQ(seg.arr))}</span>
             </div>
           ))}
         </div>
-        <p className="text-xs text-gray-400 italic mt-3 pt-2" style={{ borderTop: '1px solid #F3F4F6' }}>
+        <p className="text-xs text-gray-400 italic mt-3 pt-2" style={{ borderTop: '1px solid #E8E4DE' }}>
           Crust recommends: Offer a 10% loyalty discount to repeat customers. Send a re-engagement campaign to At Risk leads.
         </p>
       </InsightCard>

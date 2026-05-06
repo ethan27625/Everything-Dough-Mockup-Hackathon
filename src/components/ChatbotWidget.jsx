@@ -215,6 +215,7 @@ const stripHidden = (text) =>
 export default function ChatbotWidget() {
   const { addLead } = useLeads()
   const [isOpen,   setIsOpen]   = useState(false)
+  const [ctaVisible, setCtaVisible] = useState(true)
   const [messages, setMessages] = useState([GREETING])
   const [input,    setInput]    = useState('')
   const [loading,  setLoading]  = useState(false)
@@ -500,23 +501,107 @@ export default function ChatbotWidget() {
         </div>
       )}
 
-      {/* ── Floating Trigger Button ─────────────────────────────────────────── */}
-      <button
-        onClick={() => setIsOpen((v) => !v)}
-        className="w-[60px] h-[60px] bg-[#C1272D] rounded-full shadow-xl flex items-center justify-center hover:bg-[#A01F23] transition-all hover:scale-105 active:scale-95 ml-auto"
-        aria-label={isOpen ? 'Close chat' : 'Open chat'}
-        style={{ boxShadow: '0 4px 24px rgba(193,39,45,0.45)' }}
-      >
-        {isOpen ? (
-          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        ) : (
-          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M20 2H4c-1.103 0-2 .897-2 2v18l4-4h14c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z" />
-          </svg>
+      {/* ── CTA label ──────────────────────────────────────────────────────── */}
+      <style>{`
+        @keyframes ctaPulse {
+          0%, 100% { transform: scale(1); }
+          50%       { transform: scale(1.05); }
+        }
+        .lexi-cta {
+          animation: ctaPulse 2.5s ease-in-out infinite;
+          white-space: nowrap;
+        }
+        /* Desktop: label sits to the left of the bubble */
+        .lexi-cta-wrap {
+          position: absolute;
+          right: calc(100% + 12px);
+          bottom: 50%;
+          transform: translateY(50%);
+          display: flex;
+          align-items: center;
+        }
+        /* Right-pointing arrow (toward the bubble) */
+        .lexi-cta-arrow {
+          width: 0; height: 0;
+          border-top: 7px solid transparent;
+          border-bottom: 7px solid transparent;
+          border-left: 8px solid #fff;
+          filter: drop-shadow(1px 0 1px rgba(0,0,0,0.08));
+          flex-shrink: 0;
+        }
+        /* Mobile: label sits above the bubble, bubble is 65px */
+        @media (max-width: 639px) {
+          .lexi-cta-wrap {
+            right: 0;
+            bottom: calc(100% + 12px);
+            transform: none;
+            flex-direction: column;
+            align-items: flex-end;
+          }
+          .lexi-cta-arrow {
+            border-left: 7px solid transparent;
+            border-right: 7px solid transparent;
+            border-top: 8px solid #fff;
+            border-bottom: none;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.08));
+          }
+          .lexi-trigger-btn { width: 65px !important; height: 65px !important; }
+        }
+      `}</style>
+
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+        {/* CTA pill */}
+        {!isOpen && ctaVisible && (
+          <div className="lexi-cta-wrap">
+            <div
+              className="lexi-cta"
+              style={{
+                background: '#fff',
+                borderRadius: '999px',
+                padding: '7px 14px',
+                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
+                border: '1px solid #F3E8E8',
+                fontSize: '13px',
+                fontWeight: 700,
+                color: '#C1272D',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Book with Lexi! 🍕
+            </div>
+            <div className="lexi-cta-arrow" />
+          </div>
         )}
-      </button>
+
+        {/* ── Floating Trigger Button ───────────────────────────────────────── */}
+        <button
+          onClick={() => { setIsOpen((v) => !v); setCtaVisible(false) }}
+          aria-label={isOpen ? 'Close chat' : 'Open chat'}
+          className="lexi-trigger-btn"
+          style={{
+            width: '70px', height: '70px',
+            background: '#C1272D', borderRadius: '50%',
+            boxShadow: '0 4px 24px rgba(193,39,45,0.45)',
+            border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'background 0.2s, transform 0.15s',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.background = '#A01F23'}
+          onMouseLeave={(e) => e.currentTarget.style.background = '#C1272D'}
+          onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+          onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          {isOpen ? (
+            <svg width="26" height="26" fill="none" stroke="#fff" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg width="28" height="28" fill="#fff" viewBox="0 0 24 24">
+              <path d="M20 2H4c-1.103 0-2 .897-2 2v18l4-4h14c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z" />
+            </svg>
+          )}
+        </button>
+      </div>
     </div>
   )
 }
