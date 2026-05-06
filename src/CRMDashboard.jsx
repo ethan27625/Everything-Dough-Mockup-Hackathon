@@ -28,7 +28,7 @@ const STYLES = `
   @keyframes slideUp2 { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
   /* ── Insights bar charts ── */
-  .bar-fill { height: 10px; border-radius: 999px; background: #0F172A; transition: width 0.4s ease; }
+  .bar-fill { height: 10px; border-radius: 999px; background: #DC2626; transition: width 0.4s ease; }
   .bar-fill-light { height: 10px; border-radius: 999px; background: #94A3B8; transition: width 0.4s ease; }
   .bar-track { height: 10px; border-radius: 999px; background: #F1F5F9; overflow: hidden; flex: 1; }
 
@@ -43,7 +43,7 @@ const STYLES = `
   @media (max-width: 639px) { .crm2-filter-row { flex-direction: column; align-items: stretch; } }
 
   /* ── Agent terminal ── */
-  .agent-term { background: #0F172A; border-radius: 12px; padding: 16px; font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: #94A3B8; min-height: 140px; max-height: 240px; overflow-y: auto; }
+  .agent-term { background: #450A0A; border-radius: 12px; padding: 16px; font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; color: #94A3B8; min-height: 140px; max-height: 240px; overflow-y: auto; }
   .agent-term .log-line { color: #4ADE80; margin-bottom: 4px; line-height: 1.6; }
   .agent-term .log-cursor { display: inline-block; width: 8px; height: 14px; background: #4ADE80; animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 4px; }
   @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
@@ -247,13 +247,13 @@ function getDays(lead) {
 
 function getDisplayLabel(lead) {
   if (lead.status === 'Confirmed')   return { label: 'Booked',      bg: '#DBEAFE', color: '#1E40AF' }
-  if (lead.status === 'Ghosted')     return { label: 'At Risk',     bg: '#FEE2E2', color: '#991B1B' }
-  if (lead.status === 'Declined')    return { label: 'Declined',    bg: '#FEE2E2', color: '#991B1B' }
+  if (lead.status === 'Ghosted')     return { label: 'At Risk',     bg: '#FFF7ED', color: '#B91C1C' }
+  if (lead.status === 'Declined')    return { label: 'Declined',    bg: '#FFF7ED', color: '#B91C1C' }
   if (lead.status === 'In Progress') return { label: 'In Progress', bg: '#DBEAFE', color: '#1D4ED8' }
   if (lead.status === 'Pending') {
     const d = getDays(lead)
     if (d <= 21) return { label: 'Hot',  bg: '#D1FAE5', color: '#065F46' }
-    return             { label: 'Warm', bg: '#FEF3C7', color: '#92400E' }
+    return             { label: 'Warm', bg: '#FFFBEB', color: '#92400E' }
   }
   return { label: lead.status, bg: '#F1F5F9', color: '#64748B' }
 }
@@ -378,8 +378,8 @@ function getCrustAction(lead) {
   if (lead.status === 'Confirmed')
     return { bg: '#D1FAE5', text: 'Booking confirmed. Send event prep details 1 week before. Reminder: arrive 30–45 min early for setup.' }
   if (lead.status === 'Ghosted')
-    return { bg: '#F1F5F9', text: `No response in 3+ days. Send follow-up SMS: "Hi ${firstName}, still interested in your ${safe(lead.event_type)}? We'd love to make it happen!"` }
-  return { bg: '#F1F5F9', text: 'Add to re-engagement list for seasonal promotions and holiday specials.' }
+    return { bg: '#FFF7ED', text: `No response in 3+ days. Send follow-up SMS: "Hi ${firstName}, still interested in your ${safe(lead.event_type)}? We'd love to make it happen!"` }
+  return { bg: '#FFF7ED', text: 'Add to re-engagement list for seasonal promotions and holiday specials.' }
 }
 
 function getCrustDraft(lead) {
@@ -488,11 +488,11 @@ function Badge({ label, bg, color }) {
   )
 }
 
-function MetricCard({ label, value, sub }) {
+function MetricCard({ label, value, sub, accent }) {
   return (
     <div style={{ ...card, padding: '20px' }}>
       <p style={{ fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: slateText, marginBottom: '6px' }}>{label}</p>
-      <p style={{ fontSize: '26px', fontWeight: 800, color: navy, lineHeight: 1 }}>{value}</p>
+      <p style={{ fontSize: '26px', fontWeight: 800, color: accent ? '#DC2626' : navy, lineHeight: 1 }}>{value}</p>
       {sub && <p style={{ fontSize: '11px', color: '#94A3B8', marginTop: '4px' }}>{sub}</p>}
     </div>
   )
@@ -539,7 +539,7 @@ function SelectedLeadPanel({ lead, onClose }) {
             { k: 'Quote',      v: isBad(lead.estimated_quote) || lead.estimated_quote === 0 ? 'Pending' : fmt$(lead.estimated_quote) },
             { k: 'Event date', v: fmtDate(lead.event_date) },
           ].map(({ k, v }) => (
-            <div key={k} style={{ background: '#F8FAFC', borderRadius: '10px', padding: '10px 12px', border: '1px solid #F1F5F9' }}>
+            <div key={k} style={{ background: '#FFF7ED', borderRadius: '10px', padding: '10px 12px', border: '1px solid #FED7AA' }}>
               <p style={{ fontSize: '10px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#94A3B8', marginBottom: '3px' }}>{k}</p>
               <p style={{ fontSize: '13px', fontWeight: 600, color: navy, wordBreak: 'break-word' }}>{v}</p>
             </div>
@@ -547,13 +547,13 @@ function SelectedLeadPanel({ lead, onClose }) {
         </div>
 
         {/* AI score reason */}
-        <div style={{ background: '#F8FAFC', borderRadius: '10px', padding: '12px', border: '1px solid #F1F5F9' }}>
+        <div style={{ background: '#FFF7ED', borderRadius: '10px', padding: '12px', border: '1px solid #FED7AA' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
             <p style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: slateText }}>AI Score</p>
-            <span style={{ fontSize: '13px', fontWeight: 800, color: navy }}>{prob}%</span>
+            <span style={{ fontSize: '13px', fontWeight: 800, color: '#DC2626' }}>{prob}%</span>
           </div>
           <div style={{ background: '#E2E8F0', borderRadius: '999px', height: '6px', overflow: 'hidden', marginBottom: '8px' }}>
-            <div style={{ width: `${prob}%`, height: '100%', background: navy, borderRadius: '999px' }} />
+            <div style={{ width: `${prob}%`, height: '100%', background: '#DC2626', borderRadius: '999px' }} />
           </div>
           <p style={{ fontSize: '12px', color: slateText, lineHeight: 1.5 }}>{scoreReason}</p>
           <p style={{ fontSize: '10px', color: '#94A3B8', fontStyle: 'italic', marginTop: '4px' }}>AI-generated</p>
@@ -596,9 +596,9 @@ function SelectedLeadPanel({ lead, onClose }) {
               <button
                 key={label}
                 onClick={() => fn(lead)}
-                style={{ width: '100%', padding: '14px 24px', fontSize: '14px', fontWeight: 600, color: navy, background: '#F8FAFC', border: '1px solid #D1D5DB', borderRadius: '10px', cursor: 'pointer', textAlign: 'center' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#F1F5F9'; e.currentTarget.style.borderColor = '#94A3B8' }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = '#F8FAFC'; e.currentTarget.style.borderColor = '#D1D5DB' }}
+                style={{ width: '100%', padding: '14px 24px', fontSize: '14px', fontWeight: 600, color: navy, background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: '10px', cursor: 'pointer', textAlign: 'center' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#FFEDD5'; e.currentTarget.style.borderColor = '#FB923C' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = '#FFF7ED'; e.currentTarget.style.borderColor = '#FED7AA' }}
               >
                 {label}
               </button>
@@ -608,7 +608,7 @@ function SelectedLeadPanel({ lead, onClose }) {
 
         {/* Execute action */}
         <button
-          style={{ width: '100%', padding: '13px', fontSize: '14px', fontWeight: 700, color: '#fff', background: navy, border: 'none', borderRadius: '10px', cursor: 'pointer' }}
+          style={{ width: '100%', padding: '13px', fontSize: '14px', fontWeight: 700, color: '#fff', background: '#DC2626', border: 'none', borderRadius: '10px', cursor: 'pointer' }}
           onClick={() => alert('In production, this would trigger the automated follow-up workflow for this lead.')}
         >
           Execute action
@@ -630,7 +630,7 @@ function LeadCard({ lead, stage, isSelected, onClick }) {
         ...card,
         padding: '14px 16px',
         cursor: 'pointer',
-        border: isSelected ? `2px solid ${navy}` : '1px solid #E2E8F0',
+        border: isSelected ? '2px solid #FED7AA' : '1px solid #E2E8F0',
         transition: 'border-color 0.15s, box-shadow 0.15s',
       }}
       onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)' }}
@@ -662,7 +662,7 @@ function LeadCard({ lead, stage, isSelected, onClick }) {
           { label: safe(lead.how_heard) },
           { label: stage },
         ].map(({ label }) => (
-          <span key={label} style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '999px', background: '#F1F5F9', color: slateText, fontWeight: 500 }}>{label}</span>
+          <span key={label} style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '999px', background: '#FFF7ED', color: '#B91C1C', border: '1px solid #FED7AA', fontWeight: 500 }}>{label}</span>
         ))}
       </div>
     </div>
@@ -777,7 +777,7 @@ function AIAgentTab({ selected, allLeads }) {
         <button
           onClick={runDemo}
           disabled={running || !lead}
-          style={{ padding: '10px 20px', background: running ? '#94A3B8' : navy, color: '#fff', borderRadius: '10px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: running ? 'not-allowed' : 'pointer', marginBottom: '14px' }}
+          style={{ padding: '10px 20px', background: running ? '#94A3B8' : '#DC2626', color: '#fff', borderRadius: '10px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: running ? 'not-allowed' : 'pointer', marginBottom: '14px' }}
         >
           {running ? 'Running…' : `Run for ${lead ? safe(lead.customer_name).split(' ')[0] : '—'}`}
         </button>
@@ -867,7 +867,7 @@ function InsightsTab({ allLeads, enrichedLeads }) {
       <div style={{ ...card, padding: '20px' }}>
         <p style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: slateText, marginBottom: '14px' }}>Demand &amp; Bookings Trend</p>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center', marginBottom: '12px', fontSize: '11px', color: slateText }}>
-          <span><span style={{ display: 'inline-block', width: '10px', height: '10px', background: navy, borderRadius: '2px', marginRight: '5px' }} />Inquiries</span>
+          <span><span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#DC2626', borderRadius: '2px', marginRight: '5px' }} />Inquiries</span>
           <span><span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#94A3B8', borderRadius: '2px', marginRight: '5px' }} />Bookings</span>
         </div>
         {monthly.map(m => (
@@ -904,8 +904,8 @@ function FollowUpsTab({ allLeads, setSelected, setActiveTab }) {
 
   const urgency = (lead) => {
     const d = getDays(lead)
-    if (d <= 14) return { label: 'Urgent', bg: '#FEE2E2', color: '#991B1B' }
-    if (d <= 30) return { label: 'Soon',   bg: '#FEF3C7', color: '#92400E' }
+    if (d <= 14) return { label: 'Urgent', bg: '#FFF7ED', color: '#B91C1C' }
+    if (d <= 30) return { label: 'Soon',   bg: '#FFFBEB', color: '#92400E' }
     return          { label: 'Normal', bg: '#D1FAE5', color: '#065F46' }
   }
 
@@ -962,7 +962,7 @@ function FollowUpsTab({ allLeads, setSelected, setActiveTab }) {
               <button
                 onClick={e => { e.stopPropagation(); handleSelect(lead) }}
                 className="followup2-btn"
-                style={{ flexShrink: 0, padding: '7px 14px', fontSize: '12px', fontWeight: 600, color: navy, background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '8px', cursor: 'pointer' }}
+                style={{ flexShrink: 0, padding: '7px 14px', fontSize: '12px', fontWeight: 600, color: '#B91C1C', background: '#FFF7ED', border: '1px solid #FED7AA', borderRadius: '8px', cursor: 'pointer' }}
               >
                 Draft Email
               </button>
@@ -1033,7 +1033,7 @@ export default function CRMDashboard() {
     return { pipeline, hotProspects, booked }
   }, [allLeads])
 
-  const btnPrimary = { padding: '10px 20px', background: navy, color: '#fff', borderRadius: '12px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }
+  const btnPrimary = { padding: '10px 20px', background: '#DC2626', color: '#fff', borderRadius: '12px', border: 'none', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }
   const btnSecond  = { padding: '10px 20px', background: '#fff', color: navy, borderRadius: '12px', border: '1px solid #E2E8F0', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }
 
   return (
@@ -1045,8 +1045,8 @@ export default function CRMDashboard() {
         {/* Left card */}
         <div style={{ ...card, padding: '24px' }}>
           <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '999px', background: '#F1F5F9', color: slateText, fontWeight: 600 }}>Everything Dough demo</span>
-            <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '999px', background: '#F1F5F9', color: slateText, fontWeight: 600 }}>CRM + AI agent</span>
+            <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '999px', background: '#FFF7ED', color: '#B91C1C', border: '1px solid #FED7AA', fontWeight: 600 }}>Everything Dough demo</span>
+            <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '999px', background: '#FFF7ED', color: '#B91C1C', border: '1px solid #FED7AA', fontWeight: 600 }}>CRM + AI agent</span>
             <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '999px', background: '#D1FAE5', color: '#065F46', fontWeight: 600 }}>✓ Tests passed</span>
           </div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: navy, lineHeight: 1.3, marginBottom: '10px' }}>
@@ -1068,9 +1068,9 @@ export default function CRMDashboard() {
             <Link to="/" style={{ fontSize: '12px', color: slateText, textDecoration: 'none', fontWeight: 500 }}>← Back to site</Link>
           </div>
           {['CRM leads', 'Email + SMS', 'Calendar', 'Contracts', 'Crust AI agent'].map(sys => (
-            <div key={sys} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: '#F8FAFC', marginBottom: '6px', border: '1px solid #F1F5F9' }}>
+            <div key={sys} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: '#FFF7ED', marginBottom: '6px', border: '1px solid #FED7AA' }}>
               <span style={{ fontSize: '13px', color: '#334155' }}>{sys}</span>
-              <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '999px', background: '#D1FAE5', color: '#065F46', fontWeight: 700 }}>Live</span>
+              <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '999px', background: '#FFF7ED', color: '#B91C1C', border: '1px solid #FED7AA', fontWeight: 700 }}>Live</span>
             </div>
           ))}
         </div>
@@ -1078,7 +1078,7 @@ export default function CRMDashboard() {
 
       {/* ── Metric cards ───────────────────────────────────────────────────── */}
       <div className="crm2-metrics">
-        <MetricCard label="Pipeline value"        value={fmt$(metrics.pipeline)}    sub="Synthetic demo data" />
+        <MetricCard label="Pipeline value"        value={fmt$(metrics.pipeline)}    sub="Synthetic demo data" accent />
         <MetricCard label="Avg conversion score"  value="78%"                        sub="AI lead scoring" />
         <MetricCard label="Hot prospects"         value={metrics.hotProspects}       sub="Prioritize first" />
         <MetricCard label="Booked events"         value={metrics.booked}             sub="Move to reminders" />
@@ -1094,7 +1094,7 @@ export default function CRMDashboard() {
                 onClick={() => setActiveTab(tab)}
                 style={{
                   padding: '8px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap',
-                  background: activeTab === tab ? navy : 'transparent',
+                  background: activeTab === tab ? '#DC2626' : 'transparent',
                   color:      activeTab === tab ? '#fff' : slateText,
                   transition: 'all 0.15s',
                 }}
@@ -1117,7 +1117,7 @@ export default function CRMDashboard() {
 
       {/* ── Bottom note ────────────────────────────────────────────────────── */}
       <div style={{ padding: '0 24px 32px' }}>
-        <div style={{ ...card, padding: '16px 20px', fontSize: '13px', color: slateText, lineHeight: 1.6 }}>
+        <div style={{ ...card, padding: '16px 20px', fontSize: '13px', color: slateText, lineHeight: 1.6, background: '#FFF7ED', border: '1px solid #FED7AA' }}>
           <strong style={{ color: navy }}>Demo note:</strong> This is a prototype using synthetic CRM records. A production version would connect Google Sheets, Gmail, SMS, calendar, contracts, and automated workflows through authenticated APIs. All AI-generated content is clearly labeled.
         </div>
       </div>
