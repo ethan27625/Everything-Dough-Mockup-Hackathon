@@ -220,6 +220,7 @@ export default function ChatbotWidget() {
   const [input,    setInput]    = useState('')
   const [loading,  setLoading]  = useState(false)
   const bottomRef        = useRef(null)
+  const inputRef         = useRef(null)
   const partialLeadSent  = useRef(false)
 
   useEffect(() => {
@@ -341,6 +342,7 @@ export default function ChatbotWidget() {
       console.error('Anthropic API error:', err)
     } finally {
       setLoading(false)
+      setTimeout(() => inputRef.current?.focus(), 0)
     }
   }
 
@@ -389,7 +391,7 @@ export default function ChatbotWidget() {
       {/* ── Chat Panel ─────────────────────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="mb-4 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-100"
+          className="lexi-panel mb-4 bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-100"
           style={{ width: '380px', height: '500px' }}
         >
           {/* Header */}
@@ -478,13 +480,15 @@ export default function ChatbotWidget() {
           {/* Input */}
           <div className="border-t border-gray-100 bg-white px-3 py-3 flex gap-2 items-center">
             <input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask me anything…"
               disabled={loading}
-              className="flex-1 border border-gray-200 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C1272D]/40 focus:border-[#C1272D] bg-[#FAF7F2] disabled:opacity-50"
+              style={{ fontSize: '16px' }}
+              className="flex-1 border border-gray-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#C1272D]/40 focus:border-[#C1272D] bg-[#FAF7F2] disabled:opacity-50"
             />
             <button
               onClick={handleSend}
@@ -547,6 +551,7 @@ export default function ChatbotWidget() {
           }
           .lexi-trigger-btn { width: 65px !important; height: 65px !important; }
           .lexi-cta { font-size: 14px !important; padding: 10px 16px !important; }
+          .lexi-panel { position: fixed !important; left: 8px !important; right: 8px !important; width: auto !important; bottom: 100px !important; }
         }
       `}</style>
 
