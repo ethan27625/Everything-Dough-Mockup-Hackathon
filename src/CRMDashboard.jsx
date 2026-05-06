@@ -54,6 +54,27 @@ const FONT_STYLES = `
   @media (max-width: 639px) {
     .pipeline-grid { flex-direction: column !important; overflow-y: auto !important; height: auto !important; }
   }
+
+  /* ── Analytics section ───────────────────────────────────────────────────── */
+  .analytics-wrap { overflow-x: hidden; }
+  .tab-pills-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+  .tab-pills-row::-webkit-scrollbar { display: none; }
+
+  @media (max-width: 639px) {
+    .analytics-open  { height: auto !important; }
+    .analytics-inner { height: auto !important; overflow-y: auto; max-height: 80vh; }
+
+    .insights-grid { flex-direction: column !important; height: auto !important; overflow-x: hidden !important; overflow-y: auto !important; }
+    .insight-card  { flex: none !important; min-width: 0 !important; width: 100% !important; }
+
+    .trends-grid { flex-direction: column !important; height: auto !important; overflow-x: hidden !important; overflow-y: auto !important; }
+
+    .pipeline-col       { overflow: visible !important; }
+    .pipeline-col-cards { overflow-y: auto !important; max-height: 140px; }
+
+    .followup-card      { flex-direction: column !important; align-items: flex-start !important; }
+    .followup-draft-btn { margin-top: 8px !important; align-self: stretch !important; text-align: center; }
+  }
 `
 
 // ─── Sample leads ─────────────────────────────────────────────────────────────
@@ -841,12 +862,12 @@ function PipelineTab({ leads, onSelect }) {
   const completed = []
 
   const PipelineCol = ({ title, items, bg, color }) => (
-    <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
+    <div className="pipeline-col flex-1 min-w-0 flex flex-col overflow-hidden">
       <div className="flex items-center justify-between mb-2 flex-shrink-0">
         <p className="text-xs font-bold uppercase tracking-widest" style={{ color }}>{title}</p>
         <span className="text-xs font-bold rounded-full px-2 py-0.5" style={{ background: bg, color }}>{items.length}</span>
       </div>
-      <div className="overflow-y-auto flex-1 space-y-2 pr-1">
+      <div className="pipeline-col-cards overflow-y-auto flex-1 space-y-2 pr-1">
         {items.length === 0 && <p className="text-xs text-gray-400 italic text-center py-3">No leads</p>}
         {items.map((lead) => (
           <div
@@ -906,14 +927,14 @@ function InsightsTab({ leads }) {
   const sumQ      = (arr) => arr.reduce((s, l) => s + (isBad(l.estimated_quote) ? 0 : Number(l.estimated_quote)), 0)
 
   const InsightCard = ({ title, children }) => (
-    <div className="flex-1 min-w-0 bg-white rounded-2xl p-4 flex flex-col overflow-hidden" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #F3F4F6' }}>
+    <div className="insight-card flex-1 min-w-0 bg-white rounded-2xl p-4 flex flex-col overflow-hidden" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #F3F4F6' }}>
       <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 flex-shrink-0">{title}</p>
       <div className="flex-1 overflow-y-auto">{children}</div>
     </div>
   )
 
   return (
-    <div className="flex gap-3 h-full overflow-hidden">
+    <div className="insights-grid flex gap-3 h-full overflow-hidden">
       <InsightCard title="Top Performing Channels">
         <div className="space-y-2">
           {channels.map((c, i) => (
@@ -978,7 +999,7 @@ function TrendsTab({ leads }) {
   const maxCount = types[0]?.[1] || 1
 
   return (
-    <div className="flex gap-3 h-full overflow-hidden">
+    <div className="trends-grid flex gap-3 h-full overflow-hidden">
       <div className="flex-1 min-w-0 bg-white rounded-2xl p-4 overflow-y-auto" style={{ boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #F3F4F6' }}>
         <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Event Type Demand</p>
         <div className="space-y-3">
@@ -1056,7 +1077,7 @@ function FollowUpsTab({ leads, onSelect }) {
           return (
             <div
               key={lead.id}
-              className="bg-white rounded-xl px-4 py-2.5 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
+              className="followup-card bg-white rounded-xl px-4 py-2.5 flex items-center gap-3 cursor-pointer hover:bg-gray-50 transition-colors"
               style={{ border: '1px solid #F3F4F6' }}
               onClick={() => onSelect(lead)}
             >
@@ -1073,7 +1094,7 @@ function FollowUpsTab({ leads, onSelect }) {
               </div>
               <button
                 onClick={(e) => { e.stopPropagation(); onSelect(lead) }}
-                className="shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-colors"
+                className="followup-draft-btn shrink-0 text-xs font-medium px-3 py-1.5 rounded-full transition-colors"
                 style={{ background: '#FAF7F2', border: '1px solid #E5E7EB', color: '#C1272D' }}
               >
                 Draft Email
@@ -1092,7 +1113,7 @@ function AnalyticsTabs({ allLeads, onSelect }) {
 
   return (
     <div
-      className="flex flex-col flex-shrink-0 rounded-2xl overflow-hidden"
+      className="analytics-wrap flex flex-col flex-shrink-0 rounded-2xl overflow-hidden"
       style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.07)', border: '1px solid rgba(0,0,0,0.05)' }}
     >
       {/* ── Toggle bar ─────────────────────────────────────────────────────── */}
@@ -1117,9 +1138,9 @@ function AnalyticsTabs({ allLeads, onSelect }) {
       </button>
 
       {/* ── Collapsible content ─────────────────────────────────────────────── */}
-      <div style={{ height: isOpen ? '280px' : '0px', overflow: 'hidden', transition: 'height 0.3s ease' }}>
-        <div className="bg-white p-4 flex flex-col" style={{ height: '280px' }}>
-          <div className="flex items-center gap-2 mb-3 flex-shrink-0">
+      <div className="analytics-open" style={{ height: isOpen ? '280px' : '0px', overflow: 'hidden', transition: 'height 0.3s ease' }}>
+        <div className="analytics-inner bg-white p-4 flex flex-col" style={{ height: '280px' }}>
+          <div className="tab-pills-row items-center mb-3 flex-shrink-0">
             {ANALYTICS_TABS.map((t) => (
               <button
                 key={t}
