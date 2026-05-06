@@ -525,7 +525,7 @@ export default function ChatbotWidget() {
           width: 0; height: 0;
           border-top: 7px solid transparent;
           border-bottom: 7px solid transparent;
-          border-left: 8px solid #fff;
+          border-left: 8px solid #C1272D;
           filter: drop-shadow(1px 0 1px rgba(0,0,0,0.08));
           flex-shrink: 0;
         }
@@ -541,11 +541,12 @@ export default function ChatbotWidget() {
           .lexi-cta-arrow {
             border-left: 7px solid transparent;
             border-right: 7px solid transparent;
-            border-top: 8px solid #fff;
+            border-top: 8px solid #C1272D;
             border-bottom: none;
             filter: drop-shadow(0 1px 1px rgba(0,0,0,0.08));
           }
           .lexi-trigger-btn { width: 65px !important; height: 65px !important; }
+          .lexi-cta { font-size: 14px !important; padding: 10px 16px !important; }
         }
       `}</style>
 
@@ -556,14 +557,14 @@ export default function ChatbotWidget() {
             <div
               className="lexi-cta"
               style={{
-                background: '#fff',
+                background: '#C1272D',
                 borderRadius: '999px',
-                padding: '7px 14px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                border: '1px solid #F3E8E8',
-                fontSize: '13px',
+                padding: '12px 20px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
+                border: 'none',
+                fontSize: '16px',
                 fontWeight: 700,
-                color: '#C1272D',
+                color: '#fff',
                 letterSpacing: '-0.01em',
               }}
             >
@@ -580,23 +581,23 @@ export default function ChatbotWidget() {
           className="lexi-trigger-btn"
           style={{
             width: '70px', height: '70px',
-            background: '#C1272D', borderRadius: '50%',
-            boxShadow: '0 4px 24px rgba(193,39,45,0.45)',
+            background: '#fff', borderRadius: '50%',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
             border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'background 0.2s, transform 0.15s',
+            transition: 'box-shadow 0.2s, transform 0.15s',
           }}
-          onMouseEnter={(e) => e.currentTarget.style.background = '#A01F23'}
-          onMouseLeave={(e) => e.currentTarget.style.background = '#C1272D'}
+          onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 6px 20px rgba(0,0,0,0.32)'}
+          onMouseLeave={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)'}
           onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
           onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
         >
           {isOpen ? (
-            <svg width="26" height="26" fill="none" stroke="#fff" viewBox="0 0 24 24">
+            <svg width="26" height="26" fill="none" stroke="#C1272D" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           ) : (
-            <svg width="28" height="28" fill="#fff" viewBox="0 0 24 24">
+            <svg width="28" height="28" fill="#C1272D" viewBox="0 0 24 24">
               <path d="M20 2H4c-1.103 0-2 .897-2 2v18l4-4h14c1.103 0 2-.897 2-2V4c0-1.103-.897-2-2-2z" />
             </svg>
           )}
