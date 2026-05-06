@@ -794,18 +794,22 @@ function DocumentButtons({ lead }) {
       <div style={{ borderTop: '1px solid #E5E7EB', marginTop: '4px' }} />
       <div>
         <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Documents</p>
-        <div className="flex gap-2">
+        <div className="flex flex-col gap-2">
           <button
             onClick={() => generateInvoice(lead)}
-            className="flex-1 text-xs font-medium py-2 px-3 rounded-lg transition-colors hover:bg-gray-50"
-            style={{ border: '1px solid #E5E7EB', color: '#2D2D2D' }}
+            className="w-full font-medium rounded-lg transition-all"
+            style={{ fontSize: '15px', padding: '14px 24px', border: '1px solid #D1D5DB', color: '#2D2D2D', background: '#FAFAFA', textAlign: 'center' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#F3F4F6'; e.currentTarget.style.borderColor = '#9CA3AF' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#FAFAFA'; e.currentTarget.style.borderColor = '#D1D5DB' }}
           >
             📄 Generate Invoice
           </button>
           <button
             onClick={() => generateContract(lead)}
-            className="flex-1 text-xs font-medium py-2 px-3 rounded-lg transition-colors hover:bg-gray-50"
-            style={{ border: '1px solid #E5E7EB', color: '#2D2D2D' }}
+            className="w-full font-medium rounded-lg transition-all"
+            style={{ fontSize: '15px', padding: '14px 24px', border: '1px solid #D1D5DB', color: '#2D2D2D', background: '#FAFAFA', textAlign: 'center' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#F3F4F6'; e.currentTarget.style.borderColor = '#9CA3AF' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#FAFAFA'; e.currentTarget.style.borderColor = '#D1D5DB' }}
           >
             📋 Generate Contract
           </button>
