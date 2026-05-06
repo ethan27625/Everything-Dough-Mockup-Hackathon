@@ -11,7 +11,7 @@ const client = new Anthropic({
   dangerouslyAllowBrowser: true,
 })
 
-const SYSTEM_PROMPT = `You are the Everything Dough AI Assistant — a warm, friendly booking assistant for Everything Dough, a mobile pizza class and catering company in Stamford, CT run by Alexandra and Edgar Castro.
+const SYSTEM_PROMPT = `You are Lexi, the Everything Dough AI assistant — a warm, friendly booking assistant for Everything Dough, a mobile pizza class and catering company in Stamford, CT run by Alexandra and Edgar Castro.
 
 YOUR PERSONALITY: Warm, casual, enthusiastic about pizza. Think "helpful friend who knows pizza." Use emojis sparingly (🍕 and ✨ occasionally). Keep responses short — 2-3 sentences max per message. Ask one question at a time. Never sound corporate or robotic. Never use bullet points or numbered lists in conversation — talk naturally like a real person.
 
@@ -186,7 +186,7 @@ Fill in every field based on the conversation. Calculate days_to_event as the nu
 // ─── Initial greeting with quick-reply options ────────────────────────────────
 const GREETING = {
   role: 'assistant',
-  text: "Hello there! Welcome to Everything Dough, where we create memories one pizza at a time 🍕 Whether you want to learn the art of the perfect crust or have us cater your next big celebration, I'm here to help!\n\nHow can I help you today?",
+  text: "Hey there! I'm Lexi, your Everything Dough assistant 🍕 Whether you want to learn the art of the perfect crust or have us cater your next big celebration, I'm here to help!\n\nHow can I help you today?",
   options: ["🍕 Pizza Classes", "🥳 Private Events", "🥖 Baking Classes", "🍸 Cocktail Classes", "🛒 Shop", "📩 Contact / Press", "❓ FAQ"],
 }
 
@@ -400,9 +400,9 @@ export default function ChatbotWidget() {
                   className="text-white font-bold text-sm leading-tight"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  Everything Dough
+                  Lexi
                 </p>
-                <p className="text-red-200 text-xs leading-tight">AI Assistant</p>
+                <p className="text-red-200 text-xs leading-tight">Everything Dough Assistant</p>
               </div>
             </div>
             <button
@@ -496,6 +496,7 @@ export default function ChatbotWidget() {
               </svg>
             </button>
           </div>
+          <p style={{ fontSize: '10px', color: '#ccc', textAlign: 'center', padding: '2px 0 4px' }}>Powered by Lexi AI</p>
         </div>
       )}
 
