@@ -11,6 +11,49 @@ const FONT_STYLES = `
   .crm-table td, .crm-table th { padding: 12px 14px; }
   .crm-row-even td { background: #FFFFFF; }
   .crm-row-odd  td { background: #F9F5F0; }
+
+  /* ── Metric cards grid ──────────────────────────────────────────────────── */
+  .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  .metrics-grid > *:nth-child(5) { grid-column: 1 / -1; }
+  @media (min-width: 640px) {
+    .metrics-grid { grid-template-columns: repeat(5, 1fr); gap: 12px; padding: 16px 24px; }
+    .metrics-grid > *:nth-child(5) { grid-column: auto; }
+  }
+
+  /* ── Filters section ────────────────────────────────────────────────────── */
+  .filters-section { padding: 0 16px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .filters-bottom-row { display: flex; align-items: center; gap: 8px; }
+  .filters-pills { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; flex: 1; }
+  .filters-pills::-webkit-scrollbar { display: none; }
+  .lead-count { font-size: 12px; color: #9CA3AF; white-space: nowrap; flex-shrink: 0; }
+  @media (min-width: 640px) {
+    .filters-section { flex-direction: row; align-items: center; padding: 0 24px 12px; }
+    .filters-section > .search-wrap { flex: 0 0 auto; min-width: 192px; max-width: 288px; }
+    .filters-bottom-row { flex: 1; }
+    .filters-pills { flex-wrap: wrap; overflow-x: visible; }
+  }
+
+  /* ── Mobile-hidden table columns ────────────────────────────────────────── */
+  @media (max-width: 639px) { .col-hide-mobile { display: none; } }
+
+  /* ── Detail panel — mobile bottom sheet ─────────────────────────────────── */
+  @media (max-width: 639px) {
+    .detail-panel {
+      position: fixed !important;
+      bottom: 0 !important; left: 0 !important; right: 0 !important;
+      width: 100% !important; max-height: 85vh !important; height: auto !important;
+      border-left: none !important; border-top: 1px solid #E5E7EB;
+      border-radius: 16px 16px 0 0; z-index: 9000;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.18);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  }
+
+  /* ── Pipeline kanban — stack on mobile ──────────────────────────────────── */
+  @media (max-width: 639px) {
+    .pipeline-grid { flex-direction: column !important; overflow-y: auto !important; height: auto !important; }
+  }
 `
 
 // ─── Sample leads ─────────────────────────────────────────────────────────────
@@ -326,31 +369,35 @@ function CrustAI({ lead }) {
         {/* Recommended Action */}
         <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Recommended Action</p>
         <div
-          className="text-xs leading-relaxed rounded-lg px-3 py-2.5 mb-4"
+          className="text-xs leading-relaxed rounded-lg px-3 py-2.5"
           style={{ background: actionBg, color: '#2D2D2D' }}
         >
           {actionText}
         </div>
+        <p style={{ fontSize: '10px', color: '#aaa', fontStyle: 'italic', marginTop: '3px', marginBottom: '12px' }}>AI-generated</p>
 
         {/* Draft Follow-Up */}
         <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-1.5">Draft Follow-Up</p>
         {draftText ? (
-          <div
-            className="relative rounded-lg px-3 py-2.5 text-xs leading-relaxed"
-            style={{ background: '#FAF7F2', border: '1px solid #E5DDD0', fontFamily: 'monospace', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-          >
-            {draftText}
-            <button
-              onClick={handleCopy}
-              className="absolute top-2 right-2 text-xs px-2 py-0.5 rounded font-medium transition-colors"
-              style={copied
-                ? { background: '#D4EDDA', color: '#155724' }
-                : { background: '#E5E7EB', color: '#4B5563' }
-              }
+          <>
+            <div
+              className="relative rounded-lg px-3 py-2.5 text-xs leading-relaxed"
+              style={{ background: '#FAF7F2', border: '1px solid #E5DDD0', fontFamily: 'monospace', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
             >
-              {copied ? 'Copied!' : 'Copy'}
-            </button>
-          </div>
+              {draftText}
+              <button
+                onClick={handleCopy}
+                className="absolute top-2 right-2 text-xs px-2 py-0.5 rounded font-medium transition-colors"
+                style={copied
+                  ? { background: '#D4EDDA', color: '#155724' }
+                  : { background: '#E5E7EB', color: '#4B5563' }
+                }
+              >
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            <p style={{ fontSize: '10px', color: '#aaa', fontStyle: 'italic', marginTop: '3px' }}>AI-generated</p>
+          </>
         ) : (
           <p className="text-xs text-gray-400 italic">
             Draft will be generated once the conversation is complete.
@@ -366,7 +413,7 @@ function DetailPanel({ lead, onClose }) {
   const baseTotal = lead.guest_count * lead.base_price_pp
   return (
     <div
-      className="bg-white flex flex-col overflow-hidden"
+      className="detail-panel bg-white flex flex-col overflow-hidden"
       style={{
         width: '360px',
         flexShrink: 0,
@@ -820,7 +867,7 @@ function PipelineTab({ leads, onSelect }) {
   )
 
   return (
-    <div className="flex gap-3 h-full overflow-hidden">
+    <div className="pipeline-grid flex gap-3 h-full overflow-hidden">
       <PipelineCol title="New Inquiry" items={newInq}    bg="#EFF6FF" color="#1D4ED8" />
       <PipelineCol title="Quoted"      items={quoted}    bg="#FFFBEB" color="#92400E" />
       <PipelineCol title="Confirmed"   items={confirmed} bg="#F0FDF4" color="#15803D" />
@@ -961,6 +1008,7 @@ function TrendsTab({ leads }) {
             <div key={r.season}><span className="font-bold text-[#2D2D2D]">{r.season}:</span> {r.text}</div>
           ))}
         </div>
+        <p style={{ fontSize: '10px', color: '#aaa', fontStyle: 'italic', marginTop: '8px' }}>AI-generated</p>
       </div>
     </div>
   )
@@ -1176,7 +1224,7 @@ export default function CRMDashboard() {
       </header>
 
       {/* ── Metric cards ───────────────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-3 px-4 sm:px-6 py-4 flex-shrink-0">
+      <div className="metrics-grid flex-shrink-0">
         <MetricCard label="Pipeline Value"  value={fmt$(metrics.pipeline)} sub="Pending + Confirmed" accent />
         <MetricCard label="Pending"         value={metrics.pending} />
         <MetricCard label="Confirmed"       value={metrics.confirmed} />
@@ -1185,9 +1233,9 @@ export default function CRMDashboard() {
       </div>
 
       {/* ── Filters ────────────────────────────────────────────────────────── */}
-      <div className="flex items-center gap-3 px-4 sm:px-6 pb-3 flex-shrink-0 flex-wrap">
-        {/* Search */}
-        <div className="relative flex-1 min-w-48 max-w-72">
+      <div className="filters-section flex-shrink-0">
+        {/* Search — full width on mobile, inline on desktop */}
+        <div className="search-wrap relative w-full">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -1200,27 +1248,28 @@ export default function CRMDashboard() {
           />
         </div>
 
-        {/* Status pills */}
-        <div className="flex gap-2 flex-wrap">
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
-              style={
-                statusFilter === s
-                  ? { background: '#C1272D', color: '#fff' }
-                  : { background: '#fff', color: '#6B7280', border: '1px solid #E5E7EB' }
-              }
-            >
-              {s}
-            </button>
-          ))}
+        {/* Pills + count — horizontally scrollable on mobile */}
+        <div className="filters-bottom-row">
+          <div className="filters-pills">
+            {STATUS_FILTERS.map((s) => (
+              <button
+                key={s}
+                onClick={() => setStatusFilter(s)}
+                className="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+                style={
+                  statusFilter === s
+                    ? { background: '#C1272D', color: '#fff', flexShrink: 0 }
+                    : { background: '#fff', color: '#6B7280', border: '1px solid #E5E7EB', flexShrink: 0 }
+                }
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          <span className="lead-count">
+            {filtered.length} of {allLeads.length}
+          </span>
         </div>
-
-        <span className="ml-auto text-xs text-gray-400 whitespace-nowrap">
-          {filtered.length} of {allLeads.length} leads
-        </span>
       </div>
 
       {/* ── Crust AI summary bar ────────────────────────────────────────────── */}
@@ -1252,13 +1301,21 @@ export default function CRMDashboard() {
           <table className="crm-table w-full text-sm border-collapse">
             <thead>
               <tr style={{ borderBottom: '2px solid #F3F4F6' }}>
-                {['Name', 'Event Type', 'Date', 'Guests', 'Quote', 'Source', 'Status'].map((h) => (
+                {[
+                  { label: 'Name',       hide: false },
+                  { label: 'Event Type', hide: false },
+                  { label: 'Date',       hide: false },
+                  { label: 'Guests',     hide: true  },
+                  { label: 'Quote',      hide: true  },
+                  { label: 'Source',     hide: true  },
+                  { label: 'Status',     hide: false },
+                ].map(({ label, hide }) => (
                   <th
-                    key={h}
-                    className="text-left text-xs font-bold uppercase tracking-widest text-gray-400 bg-white"
+                    key={label}
+                    className={`text-left text-xs font-bold uppercase tracking-widest text-gray-400 bg-white${hide ? ' col-hide-mobile' : ''}`}
                     style={{ padding: '12px 14px', position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}
                   >
-                    {h}
+                    {label}
                   </th>
                 ))}
               </tr>
@@ -1300,12 +1357,12 @@ export default function CRMDashboard() {
                   <td className="whitespace-nowrap text-gray-600">{fmtDate(lead.event_date)}</td>
 
                   {/* Guests */}
-                  <td className="text-center font-medium">
+                  <td className="col-hide-mobile text-center font-medium">
                     {isBad(lead.guest_count) || lead.guest_count === 0 ? '—' : lead.guest_count}
                   </td>
 
                   {/* Quote */}
-                  <td className="font-bold">
+                  <td className="col-hide-mobile font-bold">
                     {isBad(lead.estimated_quote) || lead.estimated_quote === 0
                       ? <span className="text-gray-400 font-normal">Pending</span>
                       : <span style={{ color: '#C1272D' }}>{fmt$(lead.estimated_quote)}</span>
@@ -1313,7 +1370,7 @@ export default function CRMDashboard() {
                   </td>
 
                   {/* Source */}
-                  <td className="text-gray-500">{safe(lead.how_heard)}</td>
+                  <td className="col-hide-mobile text-gray-500">{safe(lead.how_heard)}</td>
 
                   {/* Status */}
                   <td><StatusBadge status={lead.status} /></td>

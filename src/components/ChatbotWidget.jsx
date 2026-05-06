@@ -496,7 +496,7 @@ export default function ChatbotWidget() {
               </svg>
             </button>
           </div>
-          <p style={{ fontSize: '10px', color: '#ccc', textAlign: 'center', padding: '2px 0 4px' }}>Powered by Lexi AI</p>
+          <p style={{ fontSize: '10px', color: '#aaa', textAlign: 'center', padding: '2px 0 4px' }}>AI-generated responses — powered by Lexi AI</p>
         </div>
       )}
 
