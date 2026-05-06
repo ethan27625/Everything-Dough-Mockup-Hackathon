@@ -10,16 +10,13 @@ Built for the AI for Impact: Small Business Challenge Hackathon at Synchrony Ski
 
 **[everything-dough-mockup-hackathon.vercel.app](https://everything-dough-mockup-hackathon.vercel.app)**
 
-- Main site with Lexi chatbot: `/`
-- Crust CRM Dashboard: `/dashboard`
-
 ---
 
 ## 📋 The Challenge
 
 Everything Dough is a mobile pizza class and catering company in Stamford, CT operated by a team of two. The majority of administrative responsibilities — customer inquiries, lead follow-up, scheduling, booking management, and client communication — are handled manually by one person.
 
-**Challenge Statement:** How might Everything Dough use AI to automate operations, better leverage customer data, increase qualified lead generation, improve customer retention, and build a scalable growth model that can be replicated in new markets — all while operating with a lean team and limited resources?
+**Challenge Statement:** How can Everything Dough use AI, CRM automation, chatbot support, and customer data to automate operations, improve response time, increase qualified leads, improve customer retention, and build a scalable system that can support future expansion into new cities?
 
 ---
 
